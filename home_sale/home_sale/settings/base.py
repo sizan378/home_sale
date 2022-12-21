@@ -11,34 +11,57 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
+
+env = environ.Env(DEBUG=(bool, False))
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+environ.Env.read_env(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4in4oq(*v8==xu_d11a6h345qvwb5bbf56bqn1g6c_!k$*o$2a'
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env("ALLOWED_HOSTS").split(" ")
 
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 ]
 
+SITE_ID = 1
+
+THIRD_PARTY_APPS=[
+    "rest_framework",
+    'django_filters',
+    "django_countries",
+    "phonenumber_field",
+]
+
+LOCAL_APPS = [
+    "apps.users",
+    "apps.profiles",
+    "apps.rating",
+    "apps.common",
+    ]
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -72,13 +95,6 @@ WSGI_APPLICATION = 'home_sale.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 
 # Password validation
@@ -116,8 +132,61 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / "static"
+# STATICFILES_DIR = []
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+import logging
+import logging.config
+
+from django.utils.log import DEFAULT_LOGGING
+logger = logging.getLogger(__name__)
+
+LOG_LEVEL = "INFO"
+
+# %(asctime)s %(name)-12s %(levelname)-8s %(message)s
+# asctime = define your timezone
+# name = package name
+# levelname = log level of message
+# message = log message
+# 12s & 8s = format specifications
+
+logging.config.dictConfig({
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters":{
+        "console":{
+            "format":"%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
+        },
+        "file":{"format":"%(asctime)s %(name)-12s %(levelname)-8s %(message)s",},
+        "django.server": DEFAULT_LOGGING["formatters"]["django.server"],
+    },
+    "handlers":{
+        "console":{
+            "class":"logging.StreamHandler",
+            "formatter":"console",
+
+        },
+        "file":{
+            "level":"INFO",
+            "class":"logging.FileHandler",
+            "formatter":"file",
+            "filename":"logs/home_sale.log",
+        },
+        "django.server": DEFAULT_LOGGING["handlers"]["django.server"],
+    },
+    "loggers":{
+        "": {"level":"INFO", "handlers": ["console","file"],"propagate":False},
+        "apps": {"level": "INFO", "handlers": ["console"],"propagate":False},
+        "django.server": DEFAULT_LOGGING["loggers"]["django.server"],
+    }
+
+})

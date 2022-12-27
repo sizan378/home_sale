@@ -36,7 +36,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         if instance.top_agent:
             representation["top_agent"] = True
-        return representation
+        return representation 
 
 
 class UpdateProfileSerializer(serializers.ModelSerializer):

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#The errexit fails the script on the first encounter of error and doesn’t proceed further, which is default bash behavior
+set -o errexit
+
+#The pipefail means that if any element of the pipeline fails, then the pipeline as a whole will fail.
+set -o pipefail
+
+#The nounset forces error whenever an unset variable is extended.
+set -o nounset
+
+# python3 manage.py wait_for_db
+python3 manage.py makemigrations
+python3 manage.py migrate --no-input
+python3 manage.py collectstatic --no-input
+python3 manage.py runserver 0.0.0.0:8008

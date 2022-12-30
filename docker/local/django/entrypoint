@@ -1,0 +1,38 @@
+#!/bin/bash
+
+#The errexit fails the script on the first encounter of error and doesn’t proceed further, which is default bash behavior
+set -o errexit
+
+#The pipefail means that if any element of the pipeline fails, then the pipeline as a whole will fail.
+set -o pipefail
+
+#The nounset forces error whenever an unset variable is extended.
+set -o nounset
+
+postgres_ready() {
+    python << END
+
+import sys
+import psycopg2
+
+try:
+    psycopg2.connect(
+        dbname="${POSTGRES_DB}",
+        user="${POSTGRES_USER}",
+        password="${POSTGRES_PASSWORD}",
+        host="${PG_HOST}",
+        port="${PG_PORT}",
+    )
+except psycopg2.OperationalError:
+    sys.exit(-1)
+sys.exit(0)
+END
+}
+
+until postgres_ready; do
+ >&2 echo "Waiting for PostgreSQL to become available....:-("
+ sleep 1
+done
+>&2 echo "PostgreSQL is ready!!!!...:-)"
+
+exec "$@"

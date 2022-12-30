@@ -4,6 +4,7 @@
 .DS_Store
 staticfiles
 mediafiles
+static
 
 # Django #
 *.log
@@ -104,9 +105,10 @@ celerybeat-schedule.*
 *.sage.py 
 
 # Environments 
-# .env 
-# .venv 
-# env/ 
+.env 
+.env/
+.venv 
+env/ 
 venv/ 
 ENV/ 
 env.bak/ 

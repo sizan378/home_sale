@@ -10,6 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+from django.utils.log import DEFAULT_LOGGING
+import logging.config
+import logging
+from datetime import timedelta
 from pathlib import Path
 import environ
 import os
@@ -45,9 +49,8 @@ DJANGO_APPS = [
     'django.contrib.sites',
 ]
 
-SITE_ID = 1
 
-THIRD_PARTY_APPS=[
+THIRD_PARTY_APPS = [
     'rest_framework',
     'django_filters',
     "django_countries",
@@ -63,9 +66,12 @@ LOCAL_APPS = [
     "apps.common",
     "apps.properties",
     "apps.enquiries",
-    ]
+]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
+SITE_ID = 1
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -80,9 +86,9 @@ ROOT_URLCONF = 'home_sale.urls'
 
 
 REST_FRAMEWORK = {
-'DEFAULT_AUTHENTICATION_CLASSES': (
-    'rest_framework_simplejwt.authentication.JWTAuthentication',
-),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
 }
 
 TEMPLATES = [
@@ -158,7 +164,6 @@ AUTH_USER_MODEL = 'users.User'
 
 # jWT setup
 
-from datetime import timedelta
 ...
 
 SIMPLE_JWT = {
@@ -198,8 +203,8 @@ SIMPLE_JWT = {
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
-    'USERNAME_CHANGE_EMAIL_CONFIRMATION':True,
-    'PASSWORD_CHANGED_EMAIL_CONFIRMATION':True,
+    'USERNAME_CHANGE_EMAIL_CONFIRMATION': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
     'SEND_CONFIRMATION_EMAIL': True,
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
     'SET_PASSWORD_RETYPE': True,
@@ -216,12 +221,9 @@ DJOSER = {
 }
 
 
-#log setup
+# log setup
 
-import logging
-import logging.config
 
-from django.utils.log import DEFAULT_LOGGING
 logger = logging.getLogger(__name__)
 
 LOG_LEVEL = "INFO"
@@ -236,30 +238,30 @@ LOG_LEVEL = "INFO"
 logging.config.dictConfig({
     "version": 1,
     "disable_existing_loggers": False,
-    "formatters":{
-        "console":{
-            "format":"%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
+    "formatters": {
+        "console": {
+            "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
         },
-        "file":{"format":"%(asctime)s %(name)-12s %(levelname)-8s %(message)s",},
+        "file": {"format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s", },
         "django.server": DEFAULT_LOGGING["formatters"]["django.server"],
     },
-    "handlers":{
-        "console":{
-            "class":"logging.StreamHandler",
-            "formatter":"console",
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "console",
 
         },
-        "file":{
-            "level":"INFO",
-            "class":"logging.FileHandler",
-            "formatter":"file",
-            "filename":"logs/home_sale.log",
+        "file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "formatter": "file",
+            "filename": "logs/home_sale.log",
         },
         "django.server": DEFAULT_LOGGING["handlers"]["django.server"],
     },
-    "loggers":{
-        "": {"level":"INFO", "handlers": ["console","file"],"propagate":False},
-        "apps": {"level": "INFO", "handlers": ["console"],"propagate":False},
+    "loggers": {
+        "": {"level": "INFO", "handlers": ["console", "file"], "propagate": False},
+        "apps": {"level": "INFO", "handlers": ["console"], "propagate": False},
         "django.server": DEFAULT_LOGGING["loggers"]["django.server"],
     }
 

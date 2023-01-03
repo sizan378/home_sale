@@ -11,6 +11,12 @@ Pillow==9.3.0
 psycopg2-binary==2.9.5
 pyflakes==3.0.1
 pyjwt==2.6.0
+tomli==2.0.1
+pytest-factoryboy==2.5.1
+pytest==7.2.0
+pytest-django==4.5.2
+Faker==15.3.4
+pytest-cov==4.0.0
 djangorestframework_simplejwt
 
 flake8==6.0.0

@@ -39,11 +39,11 @@ volume:
 home-sales-db:
 	docker compose exec postgres-db psql --username=admin --dbname=homesale
 
-test:
+pytest:
 	docker compose exec home-sales pytest -p no:warnings --cov=.
 
-test-html:
-	docker compose exec home-sales pytest -p no:warnings --cov=. --cov-report
+pytest-html:
+	docker compose exec home-sales pytest -p no:warnings --cov=. --cov-report html
 
 flake8:
 	docker compose exec home-sales flake8 .

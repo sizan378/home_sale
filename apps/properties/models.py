@@ -1,5 +1,5 @@
-import random 
-import string 
+import random
+import string
 
 from autoslug import AutoSlugField
 # from django.contrib.auth.models import User
@@ -13,27 +13,28 @@ from apps.common.models import TimeStampedUUIDModel
 
 User = get_user_model()
 
+
 class PropertyPublishedManager(models.Manager):
     def get_queryset(self):
         return super(PropertyPublishedManager, self).get_queryset().filter(published_status=True)
 
 
-
 class Property(TimeStampedUUIDModel):
     class AdvertType(models.TextChoices):
-        FOR_SALE = "For Sale",_("For Sale")
-        FOR_RENT = "For rent",_("For rent")
+        FOR_SALE = "For Sale", _("For Sale")
+        FOR_RENT = "For rent", _("For rent")
         AUCTION = "Auction", _("Auction")
 
     class PropertyType(models.TextChoices):
-        HOUSE = "House",_("House")
+        HOUSE = "House", _("House")
         APARTMENT = "Appointment", _("Appointment")
         OFFICE = "Office", _("Office")
         WAREHOUSE = "Warehouse", _("Warehouse")
         COMMERCIAL = "Commercial", _("Commercial")
         OTHER = "Other", _("Other")
 
-    user = models.ForeignKey(User,verbose_name=_("Agent,Seller or Buyer"), related_name="agent_buyer", on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, verbose_name=_("Agent,Seller or Buyer"),
+                             related_name="agent_buyer", on_delete=models.DO_NOTHING)
     title = models.CharField(_("Title"), max_length=200, blank=True)
     slug = AutoSlugField(populate_from="title", unique=True, max_length=255)
     ref_code = models.CharField(_("Ref Code"), max_length=255, unique=True, blank=True,)
@@ -48,7 +49,7 @@ class Property(TimeStampedUUIDModel):
     plot_area = models.DecimalField(_("Plot Area"), decimal_places=2, max_digits=8)
     total_floors = models.IntegerField(_("Total Floors"))
     bedrooms = models.IntegerField(_("BEDrooms"))
-    bathrooms = models.DecimalField(_("Bathrooms"), decimal_places=2, max_digits=8)
+    bathrooms = models.IntegerField(_("Bathrooms"))
     advert_type = models.CharField(_("Advert Type"), max_length=50, choices=AdvertType.choices)
     property_type = models.CharField(_("Property Type"), max_length=50, choices=PropertyType.choices)
     cover_photo = models.ImageField(_("Cover Photo"), null=True, blank=True)
@@ -60,7 +61,6 @@ class Property(TimeStampedUUIDModel):
     views = models.IntegerField(_("Total views"), default=0)
     objects = models.Manager()
     published = PropertyPublishedManager()
-
 
     def __str__(self):
         return self.title
@@ -78,7 +78,7 @@ class Property(TimeStampedUUIDModel):
     @property
     def final_property_price(self):
         tax_percentage = self.tax
-        property_price = self.price 
+        property_price = self.price
         tax_amount = round(tax_percentage * property_price, 2)
         price_after_tax = float(round(property_price + tax_amount, 2))
         return price_after_tax
@@ -88,7 +88,6 @@ class PropertyView(TimeStampedUUIDModel):
     ip = models.CharField(_("ip address"), max_length=200)
     property = models.ForeignKey(Property, related_name="properties_views", on_delete=models.CASCADE)
 
-
     def __str__(self):
         return (
             f"Total views on - {self.property.title} is - {self.property.views} views"
@@ -97,4 +96,3 @@ class PropertyView(TimeStampedUUIDModel):
     class Meta:
         verbose_name = _("Total Property View")
         verbose_name_plural = _("Total Property Views")
-    

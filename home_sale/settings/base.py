@@ -40,9 +40,9 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS").split(" ")
 # Application definition
 
 DJANGO_APPS = [
+    'django.contrib.contenttypes',
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -53,10 +53,11 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'django_filters',
-    "django_countries",
-    "phonenumber_field",
+    'django_countries',
+    'phonenumber_field',
     'djoser',
     'rest_framework_simplejwt',
+    'djcelery_email',
 ]
 
 LOCAL_APPS = [

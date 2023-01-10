@@ -1,0 +1,22 @@
+#!/bin/bash
+
+
+set -o errexit
+
+set -o nounset
+
+# set -o pipe
+
+worker_ready(){
+    celery -A home_sale inspect ping
+}
+
+
+until worker_ready; do
+    >&2 echo 'Celery worker not available'
+    sleep 1
+
+done
+    >&2 echo 'Celery worker are available'
+
+celery --broker=redis://redis:6379/0 flower

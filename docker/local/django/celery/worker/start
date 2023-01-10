@@ -1,0 +1,10 @@
+#!/bin/bash
+
+
+set -o errexit
+
+set -o nounset
+
+# set -o pipe watchmedo auto-restart --directory=home_sale --pattern=*.py    --celery --app=home_sale.celery worker
+
+celery -A home_sale.celery worker --loglevel=info
